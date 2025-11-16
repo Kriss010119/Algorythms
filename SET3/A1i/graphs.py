@@ -1,0 +1,93 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+if not os.path.exists('graphs'):
+    os.makedirs('graphs')
+
+plt.style.use('default')
+plt.rcParams['figure.figsize'] = [12, 8]
+plt.rcParams['font.size'] = 12
+
+big_rec = pd.read_csv('big_rec.csv', skiprows=1)
+small_rec = pd.read_csv('small_rec.csv', skiprows=2)
+exact_area = 0.944517
+
+plt.figure(figsize=(15, 10))
+plt.subplot(2, 2, 1)
+plt.plot(big_rec['N'], big_rec['ApproximateArea'], 'b-', alpha=0.7, linewidth=1.5, label='Широкая область')
+plt.plot(small_rec['N'], small_rec['ApproximateArea'], 'r-', alpha=0.7, linewidth=1.5, label='Узкая область')
+plt.axhline(y=exact_area, color='green', linestyle='--', linewidth=2, label=f'Точное значение: {exact_area:.4f}')
+plt.xlabel('Количество точек N')
+plt.ylabel('Приближенная площадь')
+plt.title('Зависимость приближенной площади от количества точек\n(Сравнение методов)')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.subplot(2, 2, 2)
+plt.plot(big_rec['N'], big_rec['ApproximateArea'], 'b-', alpha=0.8, linewidth=1.5)
+plt.axhline(y=exact_area, color='green', linestyle='--', linewidth=2, label=f'Точное значение')
+plt.xlabel('Количество точек N')
+plt.ylabel('Приближенная площадь')
+plt.title('Широкая область')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.ylim(0.85, 1.05)
+plt.subplot(2, 2, 3)
+plt.plot(small_rec['N'], small_rec['ApproximateArea'], 'r-', alpha=0.8, linewidth=1.5)
+plt.axhline(y=exact_area, color='green', linestyle='--', linewidth=2, label=f'Точное значение')
+plt.xlabel('Количество точек N')
+plt.ylabel('Приближенная площадь')
+plt.title('Узкая область')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.ylim(0.93, 0.96)
+plt.tight_layout()
+plt.savefig('graphs/графики_первого_типа_площадь.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+plt.figure(figsize=(15, 10))
+plt.subplot(2, 2, 1)
+plt.plot(big_rec['N'], big_rec['RelativeError']*100, 'b-', alpha=0.7, linewidth=1.5, label='Широкая область')
+plt.plot(small_rec['N'], small_rec['RelativeError']*100, 'r-', alpha=0.7, linewidth=1.5, label='Узкая область')
+plt.xlabel('Количество точек N')
+plt.ylabel('Относительное отклонение (%)')
+plt.title('Зависимость относительного отклонения от количества точек\n')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.ylim(0, 12)
+plt.tight_layout()
+plt.savefig('graphs/графики_второго_типа_отклонение.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+
+plt.figure(figsize=(14, 6))
+plt.subplot(1, 2, 1)
+plt.plot(big_rec['N'], big_rec['ApproximateArea'], 'b-', alpha=0.3, linewidth=0.5)
+plt.plot(small_rec['N'], small_rec['ApproximateArea'], 'r-', alpha=0.3, linewidth=0.5)
+big_smooth_final = big_rec['ApproximateArea'].rolling(window=15).mean()
+small_smooth_final = small_rec['ApproximateArea'].rolling(window=15).mean()
+plt.plot(big_rec['N'], big_smooth_final, 'b-', linewidth=2, label='Широкая область')
+plt.plot(small_rec['N'], small_smooth_final, 'r-', linewidth=2, label='Узкая область')
+plt.axhline(y=exact_area, color='green', linestyle='--', linewidth=2, label='Точное значение')
+plt.xlabel('Количество точек N')
+plt.ylabel('Приближенная площадь')
+plt.title('График первого типа: Приближенная площадь')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.subplot(1, 2, 2)
+plt.plot(big_rec['N'], big_rec['RelativeError']*100, 'b-', alpha=0.3, linewidth=0.5)
+plt.plot(small_rec['N'], small_rec['RelativeError']*100, 'r-', alpha=0.3, linewidth=0.5)
+big_error_smooth_final = big_rec['RelativeError'].rolling(window=15).mean() * 100
+small_error_smooth_final = small_rec['RelativeError'].rolling(window=15).mean() * 100
+plt.plot(big_rec['N'], big_error_smooth_final, 'b-', linewidth=2, label='Широкая область')
+plt.plot(small_rec['N'], small_error_smooth_final, 'r-', linewidth=2, label='Узкая область')
+plt.axhline(y=0, color='black', linestyle='-', linewidth=0.5, alpha=0.5)
+plt.xlabel('Количество точек N')
+plt.ylabel('Относительное отклонение (%)')
+plt.title('График второго типа: Относительное отклонение')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('graphs/финальные_графики_сравнение.png', dpi=300, bbox_inches='tight')
+plt.show()
