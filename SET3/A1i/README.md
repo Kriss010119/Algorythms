@@ -3,7 +3,9 @@
 ### Осина Дарья, БПИ-245
 
 ID посылки: 349117533
+
 Ссылка на ID: https://dsahse25.contest.codeforces.com/group/SLdI1pWUpC/contest/647790/submission/349117533
+
 Гитхаб: https://github.com/Kriss010119/Algorythms/tree/main/SET3/A1i
 
 ---
